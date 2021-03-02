@@ -12,7 +12,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-
+RUN go get github.com/line/line-bot-sdk-go/linebot
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o /main ./cmd
 
 FROM alpine:3.12
