@@ -1,23 +1,14 @@
-FROM golang:1.15.7-alpine3.12 as builder
+FROM golang:latest as builder
 
-RUN apk update \
-  && apk add --no-cache git curl\
-  && go get -u github.com/cosmtrek/air \
-  && chmod +x ${GOPATH}/bin/air
-
-WORKDIR /app
-
-COPY go.mod go.sum ./
-
-RUN go mod download
-
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+ENV GOARCH=amd64
+WORKDIR /go/src/github.com/yokoe/go-server-example
 COPY . .
-RUN go get github.com/line/line-bot-sdk-go/linebot
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o /main ./cmd
+RUN go build main.go
 
-FROM alpine:3.12
+# runtime image
+FROM alpine
+COPY --from=builder /go/src/github.com/yokoe/go-server-example /app
 
-COPY --from=builder /main .
-
-ENV PORT=${PORT}
-ENTRYPOINT ["/main web"]
+CMD /app/main $PORT
