@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -17,7 +16,7 @@ var helpMessage = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n..
 
 func main() {
 	port := os.Getenv("PORT")
-	fmt.Println(port)
+	log.Fatal(port)
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
@@ -28,6 +27,7 @@ func main() {
 	)
 
 	if err != nil {
+		log.Fatal("30 err")
 		log.Fatal(err)
 	}
 
@@ -55,6 +55,7 @@ func main() {
 	})
 
 	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
+		log.Fatal("58 err")
 		log.Fatal(err)
 	}
 }
