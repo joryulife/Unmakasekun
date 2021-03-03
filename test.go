@@ -12,7 +12,7 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
-var helpMessage = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n...\n選択肢n"
+var helpMessage string = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n...\n選択肢n"
 
 func main() {
 	/*port := os.Getenv("PORT")
