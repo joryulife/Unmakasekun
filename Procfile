@@ -1,1 +1,1 @@
-web: bun/Unmakasekun
+web: bin/Unmakasekun
