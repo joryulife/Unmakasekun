@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -16,7 +17,7 @@ var helpMessage = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n..
 
 func main() {
 	port := os.Getenv("PORT")
-
+	fmt.Println(port)
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
@@ -67,9 +68,8 @@ func parse(message string) string {
 				ch := rand.Intn(n) + 1
 				text := "乱数の女神さまの厳正な判断の元選ばれたのは\n" + nm[ch] + "\nでした。"
 				return text
-			} else {
-				return "選択肢の数が合わないよ、改行区切りで最後は改行しないでね！\n" + helpMessage
 			}
+			return "選択肢の数が合わないよ、改行区切りで最後は改行しないでね！\n" + helpMessage
 		}
 	}
 	return helpMessage
