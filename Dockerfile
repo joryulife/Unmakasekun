@@ -5,7 +5,7 @@ RUN apk update \
   && go get -u github.com/cosmtrek/air \
   && chmod +x ${GOPATH}/bin/air
 
-WORKDIR /Unmakasekun
+WORKDIR /app
 
 COPY go.mod go.sum ./
 
