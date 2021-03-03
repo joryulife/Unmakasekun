@@ -1,45 +1,39 @@
-// Copyright 2016 LINE Corporation
-//
-// LINE Corporation licenses this file to you under the Apache License,
-// version 2.0 (the "License"); you may not use this file except in compliance
-// with the License. You may obtain a copy of the License at:
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-// License for the specific language governing permissions and limitations
-// under the License.
-
 package main
 
 import (
-	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
+var helpMessage = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n...\n選択肢n"
+
 func main() {
+	/*port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}*/
+
 	bot, err := linebot.New(
 		os.Getenv("CHANNEL_SECRET"),
 		os.Getenv("CHANNEL_TOKEN"),
 	)
+
 	if err != nil {
 		log.Fatal(err)
-  }else{
-    fmt.Println("START")
-  }
-  
+	}
+
 	// Setup HTTP Server for receiving requests from LINE platform
 	http.HandleFunc("/callback", func(w http.ResponseWriter, req *http.Request) {
 		events, err := bot.ParseRequest(req)
-    fmt.Println("events",events)
 		if err != nil {
-      fmt.Println("errrrrrrrrrr")
 			if err == linebot.ErrInvalidSignature {
 				w.WriteHeader(400)
 			} else {
@@ -51,26 +45,40 @@ func main() {
 			if event.Type == linebot.EventTypeMessage {
 				switch message := event.Message.(type) {
 				case *linebot.TextMessage:
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text)).Do(); err != nil {
-						log.Print(err)
-					}
-				case *linebot.StickerMessage:
-					replyMessage := fmt.Sprintf(
-						"sticker id is %s, stickerResourceType is %s", message.StickerID, message.StickerResourceType)
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parse(message.Text))).Do(); err != nil {
 						log.Print(err)
 					}
 				}
 			}
 		}
 	})
-	// This is just sample code.
-	// For actual use, you must support HTTPS by using `ListenAndServeTLS`, a reverse proxy or something else.
-  
+
 	if err := http.ListenAndServe("0.0.0.0:3000", nil); err != nil {
-    fmt.Println("err")
 		log.Fatal(err)
-  }else {
-    fmt.Println("Starting")
-  }
+	}
+}
+
+func parse(message string) string {
+	rand.Seed(time.Now().UnixNano())
+	if startsWithN(message) {
+		if n, err := strconv.Atoi(message[0:1]); err == nil {
+			if nm := strings.SplitN(message, "\n", n+1); nm != nil {
+				ch := rand.Intn(n) + 1
+				text := "乱数の女神さまの厳正な判断の元選ばれたのは\n" + nm[ch] + "\nでした。"
+				return text
+			} else {
+				return "選択肢の数が合わないよ、改行区切りで最後は改行しないでね！\n" + helpMessage
+			}
+		}
+	}
+	return helpMessage
+}
+
+func startsWithN(str string) bool {
+	for i := 2; i < 10; i++ {
+		if strings.HasPrefix(str, strconv.Itoa(i)) {
+			return true
+		}
+	}
+	return false
 }
