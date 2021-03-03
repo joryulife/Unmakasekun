@@ -1,6 +1,7 @@
 package main
 
 import (
+  "fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -12,14 +13,14 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
-var helpMessage = "使い方:。\n選択肢数(2~9)\n選択肢１\n選択肢２\n...\n選択肢n"
+var helpMessage = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n...\n選択肢n"
 
 func main() {
-	port := os.Getenv("PORT")
+	/*port := os.Getenv("PORT")
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
-	}
+	}*/
 
 	bot, err := linebot.New(
 		os.Getenv("CHANNEL_SECRET"),
@@ -53,7 +54,7 @@ func main() {
 		}
 	})
 
-	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
+	if err := http.ListenAndServe("0.0.0.0:3000", nil); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -61,7 +62,7 @@ func main() {
 func parse(message string) string {
 	rand.Seed(time.Now().UnixNano())
 	if startsWithN(message) {
-		if n, err := strconv.Atoi(message[0:0]); err == nil {
+		if n,err := strconv.Atoi(message[0:1]); err == nil {
 			if nm := strings.SplitN(message, "\n", n+1); nm != nil {
 				ch := rand.Intn(n) + 1
 				text := "乱数の女神さまの厳正な判断の元選ばれたのは\n" + nm[ch] + "\nでした。"
@@ -70,9 +71,8 @@ func parse(message string) string {
 				return "選択肢の数が合わないよ、改行区切りで最後は改行しないでね！\n" + helpMessage
 			}
 		}
-	} else {
-		return helpMessage
 	}
+  return helpMessage
 }
 
 func startsWithN(str string) bool {
