@@ -46,7 +46,7 @@ func main() {
 			if event.Type == linebot.EventTypeMessage {
 				switch message := event.Message.(type) {
 				case *linebot.TextMessage:
-					if nm := strings.SplitN(message.Text, "\n", 2); nm[0] == "うんまかせくん" {
+					if nm := strings.SplitN(message.Text, "\n", 2); strings.HasPrefix(nm[0], "うんまかせくん") {
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parse(nm[1]))).Do(); err != nil {
 							log.Print(err)
 						}
