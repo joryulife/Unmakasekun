@@ -50,9 +50,9 @@ func main() {
 					nm := strings.SplitN(message.Text, "\n", 2)
 					fmt.Println(nm)
 					if strings.HasPrefix(nm[0], "うんまかせくん") {
-						if len(nm) == 1{
+						if len(nm) == 1 {
 							bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(helpMessage)).Do()
-						}else _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parse(nm[1]))).Do(); err != nil {
+						} else if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parse(nm[1]))).Do(); err != nil {
 							log.Print(err)
 						}
 					}
