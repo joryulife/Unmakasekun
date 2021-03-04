@@ -16,7 +16,6 @@ var helpMessage = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n..
 
 func main() {
 	port := os.Getenv("PORT")
-	log.Fatal(port)
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}

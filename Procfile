@@ -1,1 +1,1 @@
-web: Unmakasekun
+web: /main
