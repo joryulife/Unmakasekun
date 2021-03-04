@@ -16,6 +16,7 @@ var helpMessage = "使い方:\n選択肢数(2~9)\n選択肢１\n選択肢２\n..
 
 func main() {
 	port := os.Getenv("PORT")
+
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
@@ -45,8 +46,11 @@ func main() {
 			if event.Type == linebot.EventTypeMessage {
 				switch message := event.Message.(type) {
 				case *linebot.TextMessage:
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parse(message.Text))).Do(); err != nil {
-						log.Print(err)
+					if message.Mention.Mentionees[0].UserID == "U3aa127f38f35ddee3962757fe0d50eba" {
+						nm := strings.SplitN(message.Text, "\n", 2)
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parse(nm[1]))).Do(); err != nil {
+							log.Print(err)
+						}
 					}
 				}
 			}
